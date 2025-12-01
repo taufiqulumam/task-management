@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: task-management-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: taskmanager
+      POSTGRES_PASSWORD: taskmanager_password
+      POSTGRES_DB: taskmanagement
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - task-management-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  task-management-network:
+    driver: bridge
