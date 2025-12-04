@@ -86,12 +86,26 @@ model User {
   accounts      Account[]
   sessions      Session[]
   ownedProjects Project[]       @relation("ProjectOwner")
-  assignedTasks Task[]          @relation("TaskAssignee")
   createdTasks  Task[]          @relation("TaskCreator")
-  teamMembers   TeamMember[]
+  assignedTasks Task[]          @relation("TaskAssignee")
   comments      Comment[]
+  teamMembers   TeamMember[]
+  passwordResets PasswordReset[]
 
   @@index([email])
+}
+
+model PasswordReset {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
 }
 
 model Project {

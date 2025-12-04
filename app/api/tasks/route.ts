@@ -92,9 +92,14 @@ export async function POST(request: NextRequest) {
 
     const task = await prisma.task.create({
       data: {
-        ...validatedData,
-        dueDate: validatedData.dueDate ? new Date(validatedData.dueDate) : undefined,
-        createdById: session.user.id,
+        title: validatedData.title,
+        description: validatedData.description,
+        status: validatedData.status || "TODO",
+        priority: validatedData.priority || "MEDIUM",
+        dueDate: validatedData.dueDate ? new Date(validatedData.dueDate) : undefined, // Re-added new Date() conversion for dueDate
+        projectId: validatedData.projectId,
+        assigneeId: validatedData.assigneeId,
+        createdById: session.user.id, // Set creator
       },
       include: {
         project: {
@@ -109,7 +114,6 @@ export async function POST(request: NextRequest) {
             id: true,
             name: true,
             email: true,
-            image: true,
           }
         },
         createdBy: {
